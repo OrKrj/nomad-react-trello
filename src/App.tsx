@@ -28,7 +28,10 @@ const Board = styled.div`
 const Card = styled.div`
   background-color: ${(props) => props.theme.cardColor};
   padding: 10px;
+  margin-bottom: 10px;
 `;
+
+const toDos = ["a", "b", "c", "d", "e", "f"];
 
 function App() {
   const onDragEnd = () => {};
@@ -39,19 +42,21 @@ function App() {
           <Droppable droppableId="one">
             {(provided) => (
               <Board ref={provided.innerRef} {...provided.droppableProps}>
-                <Draggable draggableId="first" index={0}>
-                  {(provided) => (
-                    <Card
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      // handle은 특정 영역에서만 드래그 가능
-                      // 여기선 draggableProps도 같이 적용되어 전체 영역 드래그 가능
-                      {...provided.dragHandleProps}
-                    >
-                      one
-                    </Card>
-                  )}
-                </Draggable>
+                {toDos.map((toDo, index) => (
+                  <Draggable draggableId="{toDo}" index={index}>
+                    {(provided) => (
+                      <Card
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        {toDo}
+                      </Card>
+                    )}
+                  </Draggable>
+                ))}
+                {/* placeholder 덕분에 드래그시 Board 크기가 변하지 않음 */}
+                {provided.placeholder}
               </Board>
             )}
           </Droppable>
