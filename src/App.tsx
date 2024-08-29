@@ -7,6 +7,7 @@ import {
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
+import DraggableCard from "./Components/DraggableCard";
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,19 +33,13 @@ const Board = styled.div`
   border-radius: 5px;
 `;
 
-const Card = styled.div`
-  background-color: ${(props) => props.theme.cardColor};
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = ({ destination, source, draggableId }: DropResult) => {
     if (!destination) return;
 
     setToDos((oldToDos) => {
-      // non-mutation을 위한 copy
+      // non-mutation을 위한 copy // splice 메소드는 mutation
       const toDosCopy = [...oldToDos];
       // 1) Delete item on source.index(delete dragged item)
       toDosCopy.splice(source.index, 1);
@@ -62,17 +57,7 @@ function App() {
             {(provided) => (
               <Board ref={provided.innerRef} {...provided.droppableProps}>
                 {toDos.map((toDo, index) => (
-                  <Draggable key={toDo} draggableId={toDo} index={index}>
-                    {(provided) => (
-                      <Card
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        {toDo}
-                      </Card>
-                    )}
-                  </Draggable>
+                  <DraggableCard key={toDo} index={index} toDo={toDo} />
                 ))}
                 {/* placeholder 덕분에 드래그시 Board 크기가 변하지 않음 */}
                 {provided.placeholder}
