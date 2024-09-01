@@ -1,4 +1,4 @@
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "./atoms";
@@ -25,8 +25,10 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => {
     const { destination, draggableId, source } = info;
-    // drop and drag가 같은 board 내 이루어진 경우
-    if (destination?.droppableId === source.droppableId) {
+    console.log(info);
+    if (!destination) return;
+    // drag and drop이 같은 board 내 이루어진 경우
+    if (destination.droppableId === source.droppableId) {
       setToDos((originalBoards) => {
         const boardCopy = [...originalBoards[source.droppableId]];
         boardCopy.splice(source.index, 1);
@@ -36,6 +38,21 @@ function App() {
         return {
           ...originalBoards,
           [source.droppableId]: boardCopy,
+        };
+      });
+    }
+    // drag and drop이 서로 다른 board에서 각각 이루어질 때
+    if (destination.droppableId !== source.droppableId) {
+      setToDos((orignalBoards) => {
+        const dragBoardCopy = [...orignalBoards[source.droppableId]];
+        const dropBoardCopy = [...orignalBoards[destination.droppableId]];
+        dragBoardCopy.splice(source.index, 1);
+        dropBoardCopy.splice(destination.index, 0, draggableId);
+
+        return {
+          ...orignalBoards,
+          [source.droppableId]: dragBoardCopy,
+          [destination.droppableId]: dropBoardCopy,
         };
       });
     }
