@@ -23,15 +23,22 @@ const Boards = styled.div`
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
-  const onDragEnd = ({ destination, source, draggableId }: DropResult) => {
-    if (!destination) return;
-
-    // setToDos((oldToDos) => {
-    //   const toDosCopy = [...oldToDos];
-    //   toDosCopy.splice(source.index, 1);
-    //   toDosCopy.splice(destination?.index, 0, draggableId);
-    //   return toDosCopy;
-    // });
+  const onDragEnd = (info: DropResult) => {
+    const { destination, draggableId, source } = info;
+    // drop and drag가 같은 board 내 이루어진 경우
+    if (destination?.droppableId === source.droppableId) {
+      setToDos((originalBoards) => {
+        const boardCopy = [...originalBoards[source.droppableId]];
+        boardCopy.splice(source.index, 1);
+        boardCopy.splice(destination?.index, 0, draggableId);
+        // drag and drop한 배열만 두고, 나머진 그대로 반환
+        // drag and drop한 board는 boardCopy 값으로 반환
+        return {
+          ...originalBoards,
+          [source.droppableId]: boardCopy,
+        };
+      });
+    }
   };
 
   return (
