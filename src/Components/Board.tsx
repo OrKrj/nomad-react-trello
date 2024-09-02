@@ -2,9 +2,7 @@ import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
 import styled from "styled-components";
 import { useForm } from "react-hook-form";
-import { useRef } from "react";
 import { IToDo, toDoState } from "../atoms";
-import { text } from "stream/consumers";
 import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
@@ -14,6 +12,7 @@ const Wrapper = styled.div`
   border-radius: 15px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 
 interface IAreaProps {
@@ -30,13 +29,15 @@ const Area = styled.div<IAreaProps>`
       : "transparent"};
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
-  padding: 20px;
+  margin-top: 10px;
+  padding: 10px 5px;
+  width: 100%;
 `;
 
 const Title = styled.h2`
   text-align: center;
   font-weight: 600;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   font-size: 20px;
 `;
 
@@ -46,8 +47,10 @@ interface IBoardProps {
 }
 
 const Form = styled.form`
-  width: 100%;
+  width: 80%;
+  border-radius: 20px;
   input {
+    text-align: center;
     width: 100%;
   }
 `;
@@ -69,6 +72,8 @@ function Board({ toDos, boardId }: IBoardProps) {
         ...allBoards,
         // 반대로 위에서부터 추가하려면
         // [newTodo, ...allBoards[boardId]]
+        // 참고로 []는 키를 함수 내에서 동적 키로 사용하는
+        // js ES6 computed property name 문법임
         [boardId]: [...allBoards[boardId], newToDo],
       };
     });
