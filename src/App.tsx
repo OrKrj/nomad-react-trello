@@ -25,14 +25,17 @@ function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
   const onDragEnd = (info: DropResult) => {
     const { destination, draggableId, source } = info;
-    console.log(info);
+
     if (!destination) return;
     // drag and drop이 같은 board 내 이루어진 경우
     if (destination.droppableId === source.droppableId) {
       setToDos((originalBoards) => {
         const boardCopy = [...originalBoards[source.droppableId]];
+        const taskObj = boardCopy[source.index];
         boardCopy.splice(source.index, 1);
-        boardCopy.splice(destination?.index, 0, draggableId);
+        // 기존에는 stirng을 삭제, 삽입하면 됐지만,
+        // 이제 toDo는 id, text 객체로 이루어진 배열임
+        boardCopy.splice(destination?.index, 0, taskObj);
         // drag and drop한 배열만 두고, 나머진 그대로 반환
         // drag and drop한 board는 boardCopy 값으로 반환
         return {
@@ -45,9 +48,10 @@ function App() {
     if (destination.droppableId !== source.droppableId) {
       setToDos((orignalBoards) => {
         const dragBoardCopy = [...orignalBoards[source.droppableId]];
+        const taskObj = dragBoardCopy[source.index];
         const dropBoardCopy = [...orignalBoards[destination.droppableId]];
         dragBoardCopy.splice(source.index, 1);
-        dropBoardCopy.splice(destination.index, 0, draggableId);
+        dropBoardCopy.splice(destination.index, 0, taskObj);
 
         return {
           ...orignalBoards,
