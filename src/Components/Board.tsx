@@ -5,9 +5,8 @@ import styled from "styled-components";
 const Wrapper = styled.div`
   background-color: ${(props) => props.theme.boardColor};
   min-height: 300px;
-  padding-top: 30px;
-  padding: 20px 10px;
-  border-radius: 5px;
+  padding-top: 10px;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
 `;
@@ -19,9 +18,14 @@ interface IAreaProps {
 
 const Area = styled.div<IAreaProps>`
   background-color: ${(props) =>
-    props.isDraggingOver ? "pink" : props.isDraggingFromThis ? "red" : "blue"};
+    props.isDraggingOver
+      ? "#b2bec3"
+      : props.isDraggingFromThis
+      ? "#dfe6e9"
+      : "transparent"};
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
+  padding: 20px;
 `;
 
 const Title = styled.h2`
